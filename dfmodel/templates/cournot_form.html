@@ -1,0 +1,178 @@
+{% load static %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+<link rel="stylesheet" href="{% static 'css/cournot_form.css' %}">
+<script src="{% static 'js/cournot.js' %}"></script>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" style="font-size: 24px;" href="/">NK Playground</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" style="font-size: 24px;" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="font-size: 24px;" href="/display">Display</a>
+            </li>
+          </ul>
+        </div>
+    </div>
+
+</nav>
+
+<div class="container border" style="width: 50%; background-color: #edf1f7; padding-top: 0.3%; padding-bottom: 0.3%">
+    <div class="offset-md-2" style="width: 100%; padding-right: 0.1%; padding-top: 0.1%; padding-bottom: 0.1%">
+    </br>
+        <h1>NK Models - Cournot</h1>
+
+        <form method="post" name = "cournot-form" id="cournot-form" action="/cournot/" style="width: 80%; border-radius: 25px; background-color: #edf1f7" class="inputForm">
+            <input type="hidden" id="numTasksStart" name="numTasksStart"  />
+            <input type="hidden" id="numTasksEnd" name="numTasksEnd"  />
+            <input type="hidden" id="numInteractionsStart" name="numInteractionsStart"  />
+            <input type="hidden" id="numInteractionsEnd" name="numInteractionsEnd"  />
+            <input type="hidden" id="numFirmsStart" name="numFirmsStart"  />
+            <input type="hidden" id="numFirmsEnd" name="numFirmsEnd"  />
+            <input type="hidden" id="alphaStart" name="alphaStart"  />
+            <input type="hidden" id="alphaEnd" name="alphaEnd"  />
+            <input type="hidden" id="betaStart" name="betaStart"  />
+            <input type="hidden" id="betaEnd" name="betaEnd"  />
+            <input type="hidden" id="mutationStart" name="mutationStart"  />
+            <input type="hidden" id="mutationEnd" name="mutationEnd"  />
+            <input type="hidden" id="enterRuleStart" name="enterRuleStart"  />
+            <input type="hidden" id="enterRuleEnd" name="enterRuleEnd"  />
+            <input type="hidden" id="exitRuleStart" name="exitRuleStart"  />
+            <input type="hidden" id="exitRuleEnd" name="exitRuleEnd"  />
+            <input type="hidden" id="numRuns" name="numRuns"  />
+            <input type="hidden" id="numTimePeriods" name="numTimePeriods"  />
+            <input type="hidden" id="ruleParams" name="ruleParams"  />
+            {% csrf_token %}
+         <div class = "row">
+            <table class="table">
+                 <thead>
+                    <tr>
+                     <th>  </th>
+                     <th> Range Start </th>
+                     <th> Range End </th>
+                    </tr>
+                 </thead>
+                 <tbody>
+
+                    <tr>
+                        <div class="input-group">
+                        <td class="row-label">
+                              Number of Tasks (N)
+                        </td>
+                        <td> <input type="number" class="form-control range-start" id = "N_start" value="20"> <div class="error-field" id="id-N-error"></div></td>
+                        <td> <input type="number" class="form-control range-end" id = "N_end" value="20"> </td>
+                        </div>
+
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+                        <td class="row-label">Number of Interactions (K)
+                        </td>
+                        <td> <input type="number" class="form-control range-start" id = "K_start" value="20"> <div class="error-field" id="id-K-error"></div></td>
+                        <td> <input type="number" class="form-control range-end" id = "K_end" value="20"> </td>
+                        </div>
+
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+                        <td class="row-label">Number of firms
+                        </td>
+                        <td> <input type="number" class="form-control range-start" id = "num_firms_start" value="20"> <div class="error-field" id="id-firms-error"></div> </td>
+                        <td> <input type="number" class="form-control range-end" id = "num_firms_end" value="20"> </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+                        <td class="row-label">Demand Equation Alpha
+                        </td>
+                        <td> <input type="number" class="form-control" id = "alpha_start" value="1.0"> <div class="error-field" id="id-alpha-error"></div></td>
+                        <td> <input type="number" class="form-control" id = "alpha_end" value="1.0"> </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+                        <td class="row-label">Demand Equation Beta
+                        </td>
+                        <td> <input type="number" class="form-control" id = "beta_start" value="1.0"><div class="error-field" id="id-beta-error"></div> </td>
+                        <td> <input type="number" class="form-control" id = "beta_end" value="1.0"> </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+                        <td class="row-label">Entry rule
+                        </td>
+                        <td> <input type="number" class="form-control" id = "enter_rule_start" value="5"> <div class="error-field" id="id-enter-rule-error"></div> </td>
+                        <td> <input type="number" class="form-control" id = "enter_rule_end" value="5"> </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+                        <td class="row-label">Exit rule
+                        </td>
+                        <td> <input type="number" class="form-control" id = "exit_rule_start" value="0.00"> <div class="error-field" id="id-exit-rule-error"></div> </td>
+                        <td> <input type="number" class="form-control" id = "exit_rule_end" value="0.00"> </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+                        <td class="row-label">Mutation Rate
+                        </td>
+                        <td> <input type="number" class="form-control" id = "mutation_start" step=0.1 value="0.10"> <div class="error-field" id="id-mutation-error"></div> </td>
+                        <td> <input type="number" class="form-control" id = "mutation_end" step=0.1 value="0.10"> </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+
+                        <td class="row-label">Innovation Rate
+                        </td>
+                        <td> <input type="number" step=0.1 class="form-control" id="innovation_perc">
+                             <div id="id-rule-param-error" colspan="2" class="error-field" style="display: none"></div>
+                        </td>
+                        <td><span id="imitation_perc"></span></td>
+
+                        </div>
+
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+                        <td class="row-label">Time Periods per Run
+                        </td>
+                        <td> <input type="number" class="form-control" id="num_tp" value="100"> <div class="error-field" id="id-tp-error"></div> </td>
+                        <td> </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="input-group">
+
+                        <td class="row-label">Number of runs
+                        </td>
+                        <td> <input type="number" class="form-control" id="num_runs" value="100"><div class="error-field" id="id-runs-error"></div> </td>
+                        <td> </td>
+
+                        </div>
+                    </tr>
+                 </tbody>
+            </table>
+        </div>
+        <input type="button" class="btn btn-secondary btn-lg" id = "submitBtn" name = "submitBtn" value = "Start computation" onclick="prepForSubmit()" />
+        </form>
+        {{ success }}
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>

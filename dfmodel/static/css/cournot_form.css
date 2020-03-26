@@ -1,0 +1,63 @@
+#formLabel{
+    height: 70px;
+    width: 1000px;
+    /*font-weight: bold;*/
+}
+#formVal{
+    height: 70px;
+    width: 1000px;
+}
+
+.container{
+    width: 100%;
+}
+
+.col-md-2{
+    width: 30%;
+}
+.col-md-10{
+    width: 70%;
+}
+
+
+.form-control{
+    width: 60%;
+}
+
+table{
+table-layout: fixed;
+}
+.error-field{
+    width: 60%;
+    color: red;
+    font-style: italic;
+    font-size: small;
+    column-span: all;
+    width: inherit;
+    /*white-space: nowrap;*/
+}
+.input-group {
+    background-color: #edf1f7
+}
+
+.row-label{
+    font-weight: bold;
+    width: 35%;
+    background-color: #edf1f7;
+}
+
+td input{
+    width: 25%;
+}
+
+#submitBtn{
+  align: center;
+  color: submitBtn;
+  font: black;
+  font-weight: bold;
+}
+
+#imitation_perc{
+    font-style: italic;
+    font-size: small;
+}

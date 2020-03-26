@@ -1,0 +1,1 @@
+{'numTasks': 10, 'numFirms': 10, 'alpha': 1.0, 'beta': 1.0, 'enter_rule': 5.0, 'exit_rule': 0.0, 'mutation': 0.1, 'num_time_periods': 100, 'num_of_runs': 2}

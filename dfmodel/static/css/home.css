@@ -1,0 +1,25 @@
+.button{
+  height:200px;
+  width:200px;
+}
+
+#cournot-button {
+  background-image: url('cournot.jpg');
+  border-radius: 25px;
+  border: 1px solid black;
+  cursor:pointer;
+  background-size: 100%;
+  border:black;
+  height:200px;
+  width:200px;
+  font-weight: bold;
+
+}
+
+#differential-button{
+  border-radius: 25px;
+  height:200px;
+  width:200px;
+  font-weight: bold;
+}
+
