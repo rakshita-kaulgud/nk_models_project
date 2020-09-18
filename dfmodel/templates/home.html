@@ -4,9 +4,9 @@
 
 
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" style="font-size: 24px;" href="/">NK Playground</a>
+<nav class="navbar navbar-nav mr-auto navbar-expand-lg navbar-dark primary-color" style="background-color: #4472c4ff; margin-top: 2%;">
+
+        <a class="navbar-brand" style="font-size: 40px; font-weight: bold; margin-left: 7%; margin-top: 1%; margin-bottom: 1%" href="/">Industry Dynamics Simulation</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -17,30 +17,54 @@
               <a class="nav-link" style="font-size: 24px;" href="/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link"style="font-size: 24px;" href="/display">Display</a>
+              <a class="nav-link"style="font-size: 24px;" href="/display">Output</a>
             </li>
           </ul>
-        </div>
+
     </div>
 
 </nav>
 
-<div class="container">
-    <div class="col-md-8 offset-md-2" id="formDiv">
+<div style="margin-left: 8%; margin-right: 8%">
+    <div id="formDiv">
     </br>
-        <h1>NK Models</h1>
-        <hr>
-        <form method="post" style = "padding: 5%">
+        <div id="id-intro-text">
+            <p>
+                This model simulates the evolution of an industry over time as firms enter, compete, grow, and exit.
+                At the heart of the model is a production function that allows for interdependency (K) between a finite
+                and discrete set of productive activities (N).  As N and K increase, the production function becomes
+                complex thus prohibiting analytical optimization and necessitating the search for favorable
+                onfigurations of productive activities that increase firm profits.  The profit function, itself, becomes
+                non-linear and resembles a rugged landscape with numerous maxima.
+                </br>
+            </br>
+                The model configurations below refer to the nature of market competition simulated.
+                For example, the Cournot Model simulates a market where firms create commodity products undifferentiated
+                in quality or type and where firms compete based solely on cost.  The Vertical Differentiation Model allows
+                firms to differentiate based on quality but not type, resulting in firms varying their prices with their
+                quality levels.  Look for additional market models as they are developed.
+
+            </p>
+        </div>
+        <form method="post" style = "padding: 5%; text-align: center">
           {% csrf_token %}
         <div class="form-group row">
         <div class="col-md-6">
-        <input type="submit" name = "Cournot" value = "Cournot" id="cournot-button" class = "rounded">
+        <input type="submit" name = "Cournot" value = "Cournot" id="cournot-button" >
         </div>
         <div class="col-md-6">
-        <input type="submit" name = "Differential" value = "Differential" id="differential-button" disabled class="rounded"></div>
+        <input type="submit" name = "Differential" value = "Differential" id="differential-button" disabled ></div>
         </div>
         </form>
-        {{ success }}
+        <div id="id-references-text">
+            References:
+            <ul>
+               <li>Lenox, Michael, Scott Rockart, & Arie Lewin. 2007. “Interdependency, Competition, and Industry Dynamics.” <span style="text-decoration: underline;">Management Science</span>. 53(4): 599-615.
+               </li>
+               <li>Lenox, Michael, Scott Rockart, & Arie Lewin. 2006. “Interdependency, Competition, and the Distribution of Firm and Industry Profits.” <span style="text-decoration: underline;">Management Science</span>. 52(5): 757-772.
+               </li>
+            </ul>
+        </div>
     </div>
 </div>
 

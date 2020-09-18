@@ -13,7 +13,8 @@ from django.views.generic import TemplateView
 from .cFile.differentialModel import *
 from dfmodel.forms import HomeForm
 from .cFile.cournotModel import *
-
+from botocore import UNSIGNED
+from botocore.config import Config
 
 # from dfmodel.forms import IndexForm
 
@@ -71,6 +72,9 @@ class Cournot(TemplateView):
         inputs['numRuns'] = int(request.POST['numRuns'])
         inputs['numTimePeriods'] = int(request.POST['numTimePeriods'])
         inputs['ruleParams'] = float(request.POST['ruleParams'])
+        inputs['techParams'] = float(request.POST['techParams'])
+        inputs['fudgeFactorStart'] = float(request.POST['fudgeFactorStart'])
+        inputs['fudgeFactorEnd'] = float(request.POST['fudgeFactorEnd'])
 
         params_list = str(inputs)
         params_list = params_list[1:len(params_list) - 1]
@@ -141,7 +145,7 @@ class DownloadFile(TemplateView):
         s3_res = boto3.resource('s3')
         file_vals = file_val.split('/')
         file_name = file_vals[len(file_vals) - 1].strip("'")
-        print(file_name)
+        #print(file_name)
         try:
             myBucket = s3_res.Bucket('dardendifferentialmodeloutput')
             for object in myBucket.objects.all():
@@ -162,16 +166,43 @@ class DownloadFile(TemplateView):
 class Display(TemplateView):
     def get(self, request):
         s3 = boto3.resource('s3')
-        s3_client = boto3.client('s3')
+        date_files = {}
+        s3_client = boto3.client('s3', config=Config(signature_version=UNSIGNED))
         bucket = s3.Bucket('dardendifferentialmodeloutput')
+        bucket_stats = s3.Bucket('nk-cournot-stats')
         file = []
+
+        rawFileList = bucket.objects.all()
+        statsFileList = bucket_stats.objects.all()
+
+        for obj in bucket.objects.all():
+            temp = []
+            key = obj.key
+            print(key)
+            key_elements = key.split('output')
+            stats_file_key = key_elements[0] + "stats.txt"
+            print(str(key_elements))
+            print(stats_file_key)
+            temp.append(key)
+            temp.append(stats_file_key)
+            file.append(temp)
+
+        result = {'output': file}
+
+        '''
+
         for obj in bucket.objects.all():
             key = obj.key
-            # body = obj.get()['Body']._raw_stream.readlines()
             temp = []
             temp.append(key)
             file.append(temp)
-        result = {'output': file}
+
+        stat_files = []
+        for obj in bucket_stats.objects.all():
+            key = obj.key
+            temp = [key]
+            stat_files.append(temp)
+        result = {'output': file, 'stats': stat_files}'''
         return render(request, 'display.html', result)
 
     def post(self, request):
@@ -185,26 +216,45 @@ class Display(TemplateView):
         file_vals = file_val.split('/')
         file_name = file_vals[len(file_vals) - 1].strip("'")
         print(file_name)
-        try:
-            myBucket = s3_res.Bucket('dardendifferentialmodeloutput')
-            for object in myBucket.objects.all():
-                if object.key == file_val:
-                    print(":::" + object.key)
-                    if 'Delete' in request.POST:
-                        print("deleting %", object.key)
-                        s3.delete_object(Bucket='dardendifferentialmodeloutput', Key=object.key)
-                    else:
-                        s3.download_file('dardendifferentialmodeloutput', file_val,
-                                         os.path.join(os.curdir, os.path.basename(file_name)))
 
-                        file = s3.get_object(Bucket='dardendifferentialmodeloutput', Key=object.key)
-                        print(file['Body'].read())
-                        content = open(os.path.join(os.curdir, os.path.basename(file_name)), "rb") #file['Body'].read()
-                        response = FileResponse(content)
-                        # Auto detection doesn't work with plain text content, so we set the headers ourselves
-                        response["Content-Type"] = "text/plain"
-                        response["Content-Disposition"] = 'attachment; filename="' + object.key + '"'
-                        return response
+        stats_file_val = request.POST['stats_file_id']
+        print("stats file = " + stats_file_val)
+
+        content = None
+        try:
+            if 'Delete' in request.POST:
+                print("deleting " + file_val + " and " + stats_file_val)
+                s3.delete_object(Bucket='dardendifferentialmodeloutput', Key=file_val)
+                s3.delete_object(Bucket='nk-cournot-stats', Key=stats_file_val)
+            else:
+                response = None
+                if 'StatsDownload' in request.POST:
+                    print("downloading the statistics file: " + stats_file_val)
+                    s3_res.meta.client.download_file('nk-cournot-stats', stats_file_val,
+                                                     os.path.join(os.curdir, "output",
+                                                                  os.path.basename(stats_file_val)))
+                    content = open(os.path.join(os.curdir, "output", os.path.basename(stats_file_val)), "rb")
+                    response = FileResponse(content)
+                    # Auto detection doesn't work with plain text content, so we set the headers ourselves
+                    response["Content-Type"] = "text/plain"
+                    response["Content-Disposition"] = 'attachment; filename="' + stats_file_val + '"'
+                else:
+                    s3_res.meta.client.download_file('dardendifferentialmodeloutput', file_val,
+                                                     os.path.join(os.curdir, "output", os.path.basename(file_name)))
+                    content = open(os.path.join(os.curdir, "output", os.path.basename(file_name)), "rb")
+                    response = FileResponse(content)
+                    # Auto detection doesn't work with plain text content, so we set the headers ourselves
+                    response["Content-Type"] = "text/plain"
+                    response["Content-Disposition"] = 'attachment; filename="' + file_val + '"'
+
+                if os.path.exists(os.path.join(os.curdir, "output", os.path.basename(file_name))):
+                    print("removing file " + os.path.join(os.curdir, "output",
+                                                          os.path.basename(file_name)) + " locally")
+                    os.remove(os.path.join(os.curdir, "output", os.path.basename(file_name)))
+                if os.path.exists(os.path.join(os.curdir, "output", os.path.basename(stats_file_val))):
+                    os.remove(os.path.join(os.curdir, "output", os.path.basename(stats_file_val)))
+
+                return response
 
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":

@@ -1,4 +1,3 @@
-
 # Copyright 2010-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # This file is licensed under the Apache License, Version 2.0 (the "License").
@@ -16,6 +15,7 @@ import boto3
 from botocore.exceptions import ClientError
 from datetime import datetime
 
+
 def upload_file(file_name, bucket, object_name=None):
     """Upload a file to an S3 bucket
 
@@ -31,7 +31,7 @@ def upload_file(file_name, bucket, object_name=None):
 
     # Upload the file
     s3_client = boto3.client('s3')
-    
+
     try:
         response = s3_client.upload_file(file_name, bucket, object_name)
     except ClientError as e:
@@ -41,23 +41,31 @@ def upload_file(file_name, bucket, object_name=None):
 
 
 def main():
-    """Exercise upload_file()"""
     now = datetime.now()
     # Set these values before running the program
     bucket_name = 'dardendifferntialmodeloutput'
-    file_name = now.strftime("%d/%m/%Y %H:%M:%S") +" output.txt"
+    #file_name = now.strftime("%d/%m/%Y %H:%M:%S") + " output.txt"
+    file_name = now.strftime("%d-%m-%Y %H:%M:%S") + " output.txt"
     object_name = 'output1.txt'
 
+    stats_bucket_name = "nk-cournot-stats"
+    stats_file_name = now.strftime("%d-%m-%Y %H:%M:%S") + " stats.txt"
+    logging.info("uploading stats file name " + str(stats_file_name))
+    stats_file = "stats.txt"
     # Set up logging
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)s: %(asctime)s: %(message)s')
 
-    # Upload a file
+    # Upload raw output file
     response = upload_file(file_name, bucket_name, object_name)
     if response:
-        logging.info('File was uploaded')
+        logging.info('Raw output file was uploaded')
+
+    # Upload stats file
+    stats_response = upload_file(stats_file_name, stats_bucket_name, stats_file)
+    if stats_response:
+        logging.info('Statistics file was uploaded')
 
 
 if __name__ == '__main__':
     main()
-

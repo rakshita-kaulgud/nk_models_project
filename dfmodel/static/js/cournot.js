@@ -175,6 +175,48 @@ function validateInputs(){
         }
     }
 
+    if (document.getElementById("fudge_factor_end").value < document.getElementById("fudge_factor_start").value){
+        $("#fudge_factor_start").css("border-color", "red");
+        $("#fudge_factor_end").css("border-color", "red");
+        document.getElementById("id-fudgefactor-error").innerHTML = "Range start is greater than Range end";
+        $("#id-fudgefactor-error").show();
+        if(!iserror){
+            iserror = true;
+        }
+    }
+
+    if (document.getElementById("fudge_factor_end").value > 0.9){
+        document.getElementById("id-fudgefactor-error").innerHTML = "Value should be between -0.9 and 0.9";
+        $("#fudge_factor_end").css("border-color", "red");
+        $("#id-fudgefactor-error").show();
+        if(!iserror){
+            iserror = true;
+        }
+    }
+    if (document.getElementById("fudge_factor_start").value > 0.9){
+        document.getElementById("id-fudgefactor-error").innerHTML = "Value should be between -0.9 and 0.9";
+        $("#fudge_factor_start").css("border-color", "red");
+        $("#id-fudgefactor-error").show();
+        if(!iserror){
+            iserror = true;
+        }
+    }
+    if (document.getElementById("fudge_factor_end").value < -0.9){
+        document.getElementById("id-fudgefactor-error").innerHTML = "Value should be between -0.9 and 0.9";
+        $("#fudge_factor_end").css("border-color", "red");
+        $("#id-fudgefactor-error").show();
+        if(!iserror){
+            iserror = true;
+        }
+    }
+    if (document.getElementById("fudge_factor_start").value < -0.9){
+        document.getElementById("id-fudgefactor-error").innerHTML = "Value should be between -0.9 and 0.9";
+        $("#fudge_factor_start").css("border-color", "red");
+        $("#id-fudgefactor-error").show();
+        if(!iserror){
+            iserror = true;
+        }
+    }
     return iserror;
 }
 
@@ -239,6 +281,18 @@ function prepForSubmit(){
     var ruleParams = document.getElementById('innovation_perc').value;
     console.log("rule param = " + ruleParams);
     document.getElementById('ruleParams').value = ruleParams; //not needed
+
+    var techParams = document.getElementById('newtech_adoption_perc').value;
+    console.log("tech param = " + techParams);
+    document.getElementById('techParams').value = techParams; //not needed
+
+    var fudgeFactorStart = document.getElementById('fudge_factor_start').value;
+    console.log("fudgeFactorStart = " + fudgeFactorStart);
+    document.getElementById('fudgeFactorStart').value = fudgeFactorStart;
+
+    var fudgeFactorEnd = document.getElementById('fudge_factor_end').value;
+    console.log("fudgeFactorEnd = " + fudgeFactorEnd);
+    document.getElementById('fudgeFactorEnd').value = fudgeFactorEnd;
 
     var form = document.forms['cournot-form'];
     form.submit();

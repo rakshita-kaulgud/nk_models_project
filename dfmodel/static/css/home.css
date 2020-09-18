@@ -1,25 +1,36 @@
-.button{
-  height:200px;
-  width:200px;
-}
-
 #cournot-button {
-  background-image: url('cournot.jpg');
-  border-radius: 25px;
+  /*background-image: url('cournot.jpg');*/
+  background-color: #4472c4ff;
+  color: #ffffffff;
+  /*border-radius: 25px;*/
   border: 1px solid black;
   cursor:pointer;
   background-size: 100%;
   border:black;
-  height:200px;
+  height:150px;
   width:200px;
+  font-family:Calibri (Body);
+  font-size: 18px;
   font-weight: bold;
 
 }
 
 #differential-button{
-  border-radius: 25px;
-  height:200px;
+  background-color: #4472c4ff;
+  color: #ffffffff;
+  /*border-radius: 25px;*/
+  height:150px;
   width:200px;
+  font-family:Calibri (Body);
+  font-size: 20px;
   font-weight: bold;
 }
 
+.id-navbar{
+    background-color: #4472c4ff;
+}
+
+#id-intro-text, #id-references-text{
+    font-family:Calibri (Body);
+    font-size: 18px;
+}

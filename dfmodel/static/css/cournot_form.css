@@ -61,3 +61,11 @@ td input{
     font-style: italic;
     font-size: small;
 }
+.id-navbar{
+    background-color: #4472c4ff;
+}
+
+#id-intro-text, #id-references-text{
+    font-family:Calibri (Body);
+    font-size: 18px;
+}

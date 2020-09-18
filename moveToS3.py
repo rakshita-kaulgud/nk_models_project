@@ -49,18 +49,27 @@ def main():
     # Set these values before running the program
     bucket_name = 'dardendifferentialmodeloutput'
     now = datetime.now()
-    object_name = now.strftime("%d/%m/%Y %H:%M:%S") +" output.txt"
+    # object_name = now.strftime("%d/%m/%Y %H:%M:%S") +" output.txt"
+    object_name = now.strftime("%d-%m-%Y %H:%M:%S") + " output.txt"
     file_name = 'output1.txt'
    
-
+    stats_bucket_name = "nk-cournot-stats"
+    stats_file_name = now.strftime("%d-%m-%Y %H:%M:%S") + " stats.txt"
+    logging.info("uploading stats file name " + str(stats_file_name))
+    stats_file = "stats.txt"
     # Set up logging
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)s: %(asctime)s: %(message)s')
 
-    # Upload a file
+    # Upload raw output file
     response = upload_file(file_name, bucket_name, object_name)
     if response:
-        logging.info('File was uploaded')
+        logging.info('Raw output file was uploaded')
+
+    # Upload stats file
+    stats_response = upload_file(stats_file, stats_bucket_name, stats_file_name)
+    if stats_response:
+        logging.info('Statistics file was uploaded')
 
 
 if __name__ == '__main__':

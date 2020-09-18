@@ -1,0 +1,19 @@
+do the following for each unique run and time:
+Entrants [sum of entrant] -> players?
+Price [average of (price*entrant)]                     Note: there is only one price at any time
+Total_Output [sum of output]
+Avg_Output [Average of output]
+Min_Output [min of output]
+Max_Output [max of output]
+Avg_MCosts [average of mcosts]
+Min_MCosts [min of mcosts]
+Max_MCosts [max of mcosts]
+Avg_Profits [average of profits]
+Min_Profits [min of profits]
+Max_Profits [max of profits]
+Avg_Rule [average of (rule*entrant)]
+
+
+
+
+./cournot "'numTasksStart': 20, 'numTasksEnd': 20, 'numInteractionsStart': 20, 'numInteractionsEnd': 20, 'numFirmsStart': 20, 'numFirmsEnd': 20, 'alphaStart': 1.0, 'alphaEnd': 1.0, 'betaStart': 1.0, 'betaEnd': 1.0, 'mutationStart': 0.1, 'mutationEnd': 0.1, 'enterRuleStart': 5.0, 'enterRuleEnd': 5.0, 'exitRuleStart': 0.0, 'exitRuleEnd': 0.0, 'numRuns': 10, 'numTimePeriods': 2, 'ruleParams': 0.5"
