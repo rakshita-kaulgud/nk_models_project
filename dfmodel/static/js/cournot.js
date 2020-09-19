@@ -282,9 +282,13 @@ function prepForSubmit(){
     console.log("rule param = " + ruleParams);
     document.getElementById('ruleParams').value = ruleParams; //not needed
 
-    var techParams = document.getElementById('newtech_adoption_perc').value;
-    console.log("tech param = " + techParams);
-    document.getElementById('techParams').value = techParams; //not needed
+    var likelihood_new_tech_start = document.getElementById('likelihood_new_tech_start').value;
+    console.log("likelihood_new_tech_start = " + likelihood_new_tech_start);
+    document.getElementById('likelihoodNewTechStart').value = likelihood_new_tech_start;
+
+    var likelihood_new_tech_end = document.getElementById('likelihood_new_tech_end').value;
+    console.log("likelihood_new_tech_end = " + likelihood_new_tech_end);
+    document.getElementById('likelihoodNewTechEnd').value = likelihood_new_tech_end;
 
     var fudgeFactorStart = document.getElementById('fudge_factor_start').value;
     console.log("fudgeFactorStart = " + fudgeFactorStart);

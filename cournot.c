@@ -15,7 +15,9 @@ int players=20;				/* number of firms in industry */
 int N=20;					/* number of tasks */
 int K=20;					/* number of interactions */
 float rule_pram;			/* rule parameter = percent firms innovating */
+
 float tech_param;           /* tech parameter = percent firms adopting new technology (renewable) */
+
 float a[2000000][2000000];		/* vector of marginal cost coefficients */
 float alpha=1.0;			/* demand parameter */
 float beta=1.0;				/* demand parameter */
@@ -33,8 +35,8 @@ float global=0;				/* lowest marginal cost possible */
 
 float a2[2000000][2000000];
 int b2[21][21];
-int renewable = 0;
 float fudge_factor = 0.0;
+
 
 typedef struct {
      int task[100]; 
@@ -69,6 +71,8 @@ float exitRuleEnd;
 
 float fudgeFactorStart;
 float fudgeFactorEnd;
+float likelihoodNewTechStart;
+float likelihoodNewTechEnd;
 
 int numFirmsStart;
 int numFirmsEnd;
@@ -76,6 +80,8 @@ int numTasksStart; //N
 int numTasksEnd; //N
 int numInteractionsStart; //K
 int numInteractionsEnd; //K
+
+
 
 /* ---------------- */
 
@@ -178,11 +184,7 @@ void setParams(){
     alpha = random_float(alphaStart, alphaEnd);
     beta = random_float(betaStart, betaEnd);
     fudge_factor = random_float(fudgeFactorStart, fudgeFactorEnd);
-    
-    printf("\n ----- PARAMS ----- \n");
-
-    printf("\fudge_factor = %f", fudge_factor);
-    printf("\n ----- PARAMS ----- \n");
+    tech_param = random_float(likelihoodNewTechStart, likelihoodNewTechEnd);
 }
 
 void parameterize()
@@ -231,7 +233,7 @@ void seed_landscape()
      };
 }
 
-void seed_landscape_renewable()
+void seed_landscape_new_tech()
 {
     // initialize landscape. Call this twice. 
     // will a1 a2 b1 b2 - 2 landscapes
@@ -242,7 +244,7 @@ void seed_landscape_renewable()
     {
           for(j = 1; j <= combos; j++)
           {
-          	a2[i][j] = randfloat();
+          	a2[i][j] = randfloat(); // a & b -> cofficients for the equation. each decision is 0/1. 
           };
 	  	  for(j = 1; j < i; j++)
           {
@@ -274,23 +276,15 @@ void initialize_firms(int runner)
           firm[i].entrant = 0;
           firm[i].profit = 0;
           tmp = randfloat();
-          if (tmp > tech_param){
-              firm[i].tech = 1;
-          } else {
-              firm[i].tech = 0;
-          }
+          //  tech_param - > likelihood of adopting new tech. 
           /*
-            tech_param - > likelihood of new 
-            1 - new tech
-            0 - old tech
-
-            tmp = randfloat();
-            if (tmp > tech_param)
-         	 	 firm[i].tech = 1;
-            else
-         	  	 firm[i].tech = 0;
-
+                tech_param = a random float between 'likelihoodNewTechStart' and 'likelihoodNewTechEnd'. 
           */
+          if (tmp > tech_param){
+              firm[i].tech = 0; // old tech
+          } else {
+              firm[i].tech = 1; // new tech
+          }
           tmp = randfloat();
           if (tmp > rule_pram)
          	 	 firm[i].rule = 1;
@@ -465,7 +459,7 @@ void parseInput(char input[]){
         inputs = strtok(NULL, ",");
     }
 
-    for(int i = 0; i < 22; i++){
+    for(int i = 0; i < 23; i++){
         char buffer[strlen(data[i])];
         strcpy(buffer, data[i]);
 
@@ -590,23 +584,28 @@ void parseInput(char input[]){
                     //printf("\nruleParams after = %f\n", rule_pram);
                 }
         }
-        if (strstr(data2[0], "techParams") != NULL){
+        if (strstr(data2[0], "likelihoodNewTechStart") != NULL){
                 //printf("\ntechParams = %s", data2[1]);
                 if (data2[1][0] != '\0'){
-                    tech_param = atof(data2[1]);
+                    likelihoodNewTechStart = atof(data2[1]);
+                    //printf("\nruleParams after = %f\n", rule_pram);
+                }
+        }
+        if (strstr(data2[0], "likelihoodNewTechEnd") != NULL){
+                //printf("\ntechParams = %s", data2[1]);
+                if (data2[1][0] != '\0'){
+                    likelihoodNewTechEnd = atof(data2[1]);
                     //printf("\nruleParams after = %f\n", rule_pram);
                 }
         }
         if (strstr(data2[0], "fudgeFactorStart") != NULL){
                 if (data2[1][0] != '\0'){
                     fudgeFactorStart = atof(data2[1]);
-                    printf("\n fudgeFactorStart = %f\n", fudgeFactorStart);
                 }
         }
         if (strstr(data2[0], "fudgeFactorEnd") != NULL){
                 if (data2[1][0] != '\0'){
                     fudgeFactorEnd = atof(data2[1]);
-                    printf("\n fudgeFactorEnd = %f\n", fudgeFactorEnd);
                 }
         }
     }
@@ -635,25 +634,21 @@ int main(int argc, char *argv[])
     srand(121);
 
     /* Rule = random mix */
-
-    printf("\n-------SETTING PARAMS----------\n");
     setParams();
     printf("\n-------DONE SETTING PARAMS----------\n");
 
     stream = fopen("output1.txt","w");
     stream2 = fopen("stats.txt", "w");
-
-    fprintf(stream,"run	time	firm	entrant	price	output	mcosts	profits	rule	N	K	firms	theta	global	rule_pram\n");
-    fprintf(stream2, "run   time   Entrants   Price   Total_Output   Avg_Output   Min_Output   Max_Output   Avg_MCosts   Min_MCosts   Max_MCosts   Avg_Profits   Min_Profits   Max_Profits   Avg_Rule\n");
+    //new_tech_likelihood - tech_param
+    //percentage_improvement_new_tech - fudge_factor
+    fprintf(stream,"run	time	firm	entrant   technology	price	output	mcosts	profits	rule	N	K	firms	theta	global	rule_pram   new_tech_likelihood  percentage_improvement_new_tech   \n");
+    fprintf(stream2, "run   time   Entrants   Price   Total_Output   Avg_Output   Min_Output   Max_Output   Avg_MCosts   Min_MCosts   Max_MCosts   Avg_Profits   Min_Profits   Max_Profits   Avg_Rule   Perc_New_Tech\n");
     while (runs <= number_of_runs)
     {
-        //strcpy(input_str, temp_input);
-        //printf("\n input ready\n");
-        //parseInput(argv[1]);
         parseInput(input_str);
 	    parameterize();								/* gather parameter values */
 	    seed_landscape();							/* initialize landscape */
-        seed_landscape_renewable();                 /* initialize landscape with respect to new tech */
+        seed_landscape_new_tech();                 /* initialize landscape with respect to new tech */
 	    find_global();								/* find global optima */
 	    initialize_firms(runs);				/* assign tasks and rules to firms */
 	    total_profit = 0.01;
@@ -670,6 +665,9 @@ int main(int argc, char *argv[])
 	    float min_profit = 0;
 	    float max_profit = 0;
 	    float avg_rule;
+        int num_new_tech = 0;
+        int num_entrants = 0; 
+        float new_tech_perc = 0.0;
 	    // iterate - number of time periods
         
 	    while (timer <= number_of_time_periods)
@@ -686,14 +684,19 @@ int main(int argc, char *argv[])
 	        min_profit = 0;
 	        max_profit = 0;
 	        avg_rule = 0;
+            num_new_tech = 0;
+            num_entrants = 0; 
+            new_tech_perc = 0.0;
  	        determine_entrants();					/* determine players and profits */
             //printf("\nnumber of firms = %d\n", firms);
 		    for(i = 1; i <= firms; i++)
 		    {
-		        fprintf(stream,"%d	%d	%d	%d	%4.3f	%4.3f	%4.3f	%4.3f	%3.2f	%d	%d	%d	%3.2f	%4.3f	%4.3f %d %f\n",runs,timer,i,firm[i].entrant,firm[i].price,firm[i].quantity,firm[i].mcost,firm[i].profit,firm[i].rule,N,K,firms,mutation,global,rule_pram, firm[i].tech, fudge_factor );
+		        fprintf(stream,"%d	%d	%d	%d	%d %4.3f	%4.3f	%4.3f	%4.3f	%3.2f	%d	%d	%d	%3.2f	%4.3f	%4.3f %4.3f %4.3f\n",runs,timer,i,firm[i].entrant,firm[i].tech,firm[i].price,firm[i].quantity,firm[i].mcost,firm[i].profit,firm[i].rule,N,K,firms,mutation,global,rule_pram, tech_param, fudge_factor);
 		        if (firm[i].entrant == 1){
-                    //printf("entrant = %d\n", firm[i].entrant);
-                    //printf("entrant compare = %d\n", (firm[i].entrant == 1));
+                    num_entrants++;
+                    if (firm[i].tech == 1){
+                        num_new_tech++;
+                    }
 		            total_output = total_output + firm[i].quantity;
                     price_per_time = firm[i].entrant * firm[i].price; // entrant = 1 -> 1 * price. price is the same for all throughout the time
 
@@ -734,13 +737,15 @@ int main(int argc, char *argv[])
 		            avg_rule = (avg_rule + (firm[i].entrant * firm[i].rule)); // divide by number of players - average at each itersation
 		        };
             }
+            new_tech_perc = ((num_new_tech * 1.0 )/num_entrants);
+            printf("new_tech_perc = %4.3f", new_tech_perc);
 		    update();	/* update players positions */
 
             // "run   time   Entrants   Price   Total_Output   Avg_Output   Min_Output   Max_Output   Avg_MCosts   Min_MCosts   Max_MCosts   Avg_Profits   Min_Profits   Max_Profits   Avg_Rule" (price_per_time/players)
             if (players == 0){
-                fprintf(stream2,"%d   %d   %d   %4.3f  %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f \n" ,runs,timer,players,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+                fprintf(stream2,"%d   %d   %d   %4.3f  %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f %4.3f\n" ,runs,timer,players,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0, 0.0);
             } else {
-                fprintf(stream2,"%d   %d   %d   %4.3f  %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f \n" ,runs,timer,players,(price_per_time/players),total_output,(total_output/players),min_output,max_output,(avg_mcost/players),min_mcost,max_mcost,(avg_profit/players),min_profit,max_profit,avg_rule/players);
+                fprintf(stream2,"%d   %d   %d   %4.3f  %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f   %4.3f %4.3f\n" ,runs,timer,players,(price_per_time/players),total_output,(total_output/players),min_output,max_output,(avg_mcost/players),min_mcost,max_mcost,(avg_profit/players),min_profit,max_profit,avg_rule/players, new_tech_perc);
             }
             timer++;
    	    };

@@ -72,7 +72,8 @@ class Cournot(TemplateView):
         inputs['numRuns'] = int(request.POST['numRuns'])
         inputs['numTimePeriods'] = int(request.POST['numTimePeriods'])
         inputs['ruleParams'] = float(request.POST['ruleParams'])
-        inputs['techParams'] = float(request.POST['techParams'])
+        inputs['likelihoodNewTechStart'] = float(request.POST['likelihoodNewTechStart'])
+        inputs['likelihoodNewTechEnd'] = float(request.POST['likelihoodNewTechEnd'])
         inputs['fudgeFactorStart'] = float(request.POST['fudgeFactorStart'])
         inputs['fudgeFactorEnd'] = float(request.POST['fudgeFactorEnd'])
 
@@ -95,8 +96,6 @@ class Home(TemplateView):
         form = HomeForm(request.POST)
         inputs = {}
         temp = ""
-        print("========================")
-        print("alpha = " + str(request.POST['alpha']))
         if form.is_valid():
             numTasks = form.cleaned_data['numTasks']
             inputs['numTasks'] = numTasks

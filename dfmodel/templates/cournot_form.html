@@ -77,7 +77,8 @@
             <input type="hidden" id="numRuns" name="numRuns"  />
             <input type="hidden" id="numTimePeriods" name="numTimePeriods"  />
             <input type="hidden" id="ruleParams" name="ruleParams"  />
-            <input type="hidden" id="techParams" name="techParams"  />
+            <input type="hidden" id="likelihoodNewTechStart" name="likelihoodNewTechStart"  />
+            <input type="hidden" id="likelihoodNewTechEnd" name="likelihoodNewTechEnd"  />
             <input type="hidden" id="fudgeFactorStart" name="fudgeFactorStart"  />
             <input type="hidden" id="fudgeFactorEnd" name="fudgeFactorEnd" />
             {% csrf_token %}
@@ -161,11 +162,19 @@
                     </tr>
                     <tr>
                         <div class="input-group">
-                        <td class="row-label">Fudge Factor
+                        <td class="row-label">Percentage improvement using new technology
                         </td>
                         <td> <input type="number" class="form-control" id = "fudge_factor_start" step=0.1 value="0.0"> <div class="error-field" id="id-fudgefactor-error"></div> </td>
                         <td> <input type="number" class="form-control" id = "fudge_factor_end" step=0.1 value="0.0"> </td>
                         </div>
+                    </tr>
+                    <tr>
+                      <div class="input-group">
+                      <td class="row-label">Likelihood of new technology adoption
+                      </td>
+                      <td> <input type="number" class="form-control" id = "likelihood_new_tech_start" step=0.1 value="0.0"> <div class="error-field" id="likelihood_new_tech_error"></div> </td>
+                      <td> <input type="number" class="form-control" id = "likelihood_new_tech_end" step=0.1 value="0.0"> </td>
+                      </div>
                     </tr>
                     <tr>
                         <div class="input-group">
@@ -175,15 +184,6 @@
                              <div id="id-rule-param-error" colspan="2" class="error-field" style="display: none"></div>
                         </td>
                         <td><span id="imitation_perc"></span></td>
-                        </div>
-                    </tr>
-                    <tr>
-                        <div class="input-group">
-                        <td class="row-label">New Technology Adoption Rate
-                        </td>
-                        <td> <input type="number" step=0.1 class="form-control" id="newtech_adoption_perc">
-                           <div id="id-tech-param-error" colspan="2" class="error-field" style="display: none"></div>
-                        </td>
                         </div>
                     </tr>
                     <tr>
